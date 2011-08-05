@@ -1,6 +1,6 @@
 require 'eventmachine'
 Gem::Specification.new do |s|
-  s.name = 'n00by'
+  s.name = 'ruby-now'
   s.version = '0.0.1'
   s.homepage = 'http://nowjs.org'
 
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.summary = 'Ruby/NowJS library'
 
-  s.description = "n00by is a Ruby interface for NowJS, designed to be
+  s.description = "ruby-now is a Ruby interface for NowJS, designed to be
   used as the layer of communication between a Node server running
   NowJS and a Rails server running whatever Ruby app you might have."
 
