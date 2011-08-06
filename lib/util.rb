@@ -38,6 +38,6 @@ module Util
                 })
   end
   def self.send_data str
-    BidirectionalJsonRadio.conn[0].send_data str
+    RubyNow.conn[0].send_data str
   end
 end

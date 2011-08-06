@@ -5,7 +5,7 @@ require 'json'
 require 'util'
 require 'namedblock'
 
-module BidirectionalJsonRadio
+module RubyNow
   @@conn = []
   def self.conn
     @@conn
@@ -26,12 +26,3 @@ module BidirectionalJsonRadio
     @@conn.delete self
   end
 end
-
-EventMachine::run {
-  EventMachine::start_server "127.0.0.1", 8081, BidirectionalJsonRadio
-  BidirectionalJsonRadio.registerFunction('aFunctionObject', lambda{|*a|
-                                            puts a.join(' ')})
-  BidirectionalJsonRadio.registerFunction('otherFunc', lambda{|cb, *a|
-                                            cb.call(a.join(' '))})
-  puts 'running json radio of happiness on port 8081 of your microwave'
-}
