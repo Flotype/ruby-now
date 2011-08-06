@@ -27,16 +27,21 @@ module Util
                     @@functions[a['fqn']] :
                     (@@closures.has_key?(a['fqn']) ?
                      @@closures[a['fqn']] :
-                     (lambda{|*args| 
-                        self.send_data({ "name" => "rfc",
-                                         "args" => [{ "fqn" => a['fqn'],
-                                                      "args" => args }] }.to_json) }))) :
+                     self.remoteCall(a['fqn']))):
                    (a.is_a?(Proc) ?
                     (((@@closures[a.to_s] = a) && true) ||
                      {"fqn" => a.to_s}) :
                     a))
                 })
   end
+  def self.remoteCall a
+    (lambda{|*args| 
+       self.send_data({ "name" => "rfc",
+                        "args" => [{ "fqn" => a,
+                                     "args" => args }] }.to_json)
+     })
+  end
+
   def self.send_data str
     RubyNow.conn[0].send_data str
   end

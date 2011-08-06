@@ -10,6 +10,9 @@ module RubyNow
   def self.conn
     @@conn
   end
+  def self.remoteCall name
+    Util.remoteCall name
+  end
   def self.registerFunction name, block
     Util.registerFunction name, block
   end

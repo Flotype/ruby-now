@@ -1,7 +1,7 @@
 require 'eventmachine'
 Gem::Specification.new do |s|
   s.name = 'ruby-now'
-  s.version = '0.0.1'
+  s.version = '0.0.2'
   s.homepage = 'http://nowjs.org'
 
   s.authors = ["Flotype"]
