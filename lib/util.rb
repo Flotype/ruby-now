@@ -5,16 +5,19 @@ module Util
   def self.functions
     @@functions
   end
+
   def self.registerFunction name, block
     block = NamedBlock.new(&block)
     block.name name
     @@functions[name] = block
   end
+
   def self.processData hash
-    obj = hash['args'][0];
-    case hash['name']
+    case hash['type']
     when 'rfc'
-      self.callFunc(@@functions[obj['fqn']], obj['args'])
+      self.callFunc(@@functions[hash['fqn']], hash['args'])
+    when 'new'
+      puts "Accepted new connection"
     else
       puts 'unidentified json, json'
     end
@@ -27,22 +30,30 @@ module Util
                     @@functions[a['fqn']] :
                     (@@closures.has_key?(a['fqn']) ?
                      @@closures[a['fqn']] :
-                     self.remoteCall(a['fqn']))):
+                     self.makeClosure(a['fqn']))):
                    (a.is_a?(Proc) ?
                     (((@@closures[a.to_s] = a) && true) ||
                      {"fqn" => a.to_s}) :
                     a))
-                })
+                });
   end
-  def self.remoteCall a
+
+ def self.doMulticall group, fqn, args
+   self.send_data({"type" => "multicall",
+                    "fqn" => fqn,
+                    "args" => args}.to_json)
+ end
+
+ def self.makeClosure a
     (lambda{|*args| 
-       self.send_data({ "name" => "rfc",
-                        "args" => [{ "fqn" => a,
-                                     "args" => args }] }.to_json)
+       self.send_data({ "type" => "closurecall",
+                        "fqn" => a,
+                        "args" => args}.to_json)
      })
   end
 
   def self.send_data str
     RubyNow.conn[0].send_data str
   end
+
 end
