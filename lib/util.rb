@@ -19,7 +19,7 @@ module Util
       puts 'unidentified json, json'
     end
   end
-  def self.serializeArgs args
+  def self.readyArgs args
     args.collect {|a|
       ((a.is_a?(Hash) && a.has_key?('fqn')) ?
        (@@functions.has_key?(a['fqn']) ?
@@ -28,22 +28,23 @@ module Util
          @@closures[a['fqn']] :
          self.remoteCall(a['fqn']))):
        (a.is_a?(Proc) ?
-        (((@@closures[a.to_s] = a) && false) ||
-         {"fqn" => a.to_s}) :
-        a))
+        (((@@functions.has_key?(a['fqn']) ||
+           @@closures[a.to_s] = a) &&
+          {"fqn" => a.to_s})) :
+         a))
     }
   end
 
   def self.callFunc func, args
-    func.call *(self.serializeArgs args)
+    func.call *(self.readyArgs args)
   end
 
   def self.remoteCall a
-    (lambda{|*args| 
-       self.send_data({ "name" => "closurecall",
-                        "args" => [{ "fqn" => a,
-                                     "args" => (self.serializeArgs args)}] }.to_json)
-     })
+    lambda{|*args| 
+      self.send_data({ "name" => "closurecall",
+                       "args" => [{ "fqn" => a,
+                                    "args" => (self.readyArgs args)}] }.to_json)
+    }
   end
 
   def self.send_data str
