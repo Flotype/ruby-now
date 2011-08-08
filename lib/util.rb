@@ -19,26 +19,28 @@ module Util
       puts 'unidentified json, json'
     end
   end
+  def self.serialize a
+    ((a.is_a?(Hash) && a.has_key?('fqn')) ?
+     (@@functions.has_key?(a['fqn']) ?
+      @@functions[a['fqn']] :
+      (@@closures.has_key?(a['fqn']) ?
+       @@closures[a['fqn']] :
+       self.remoteCall(a['fqn']))):
+     (a.is_a?(Proc) ?
+      (((@@closures[a.to_s] = a) && true) ||
+       {"fqn" => a.to_s}) :
+      a))
+  end
 
   def self.callFunc func, args
-    func.call *(args.collect{|a|
-                  ((a.is_a?(Hash) && a.has_key?('fqn')) ?
-                   (@@functions.has_key?(a['fqn']) ?
-                    @@functions[a['fqn']] :
-                    (@@closures.has_key?(a['fqn']) ?
-                     @@closures[a['fqn']] :
-                     self.remoteCall(a['fqn']))):
-                   (a.is_a?(Proc) ?
-                    (((@@closures[a.to_s] = a) && true) ||
-                     {"fqn" => a.to_s}) :
-                    a))
-                })
+    func.call *(args.collect(self.serialize))
   end
+
   def self.remoteCall a
     (lambda{|*args| 
        self.send_data({ "name" => "rfc",
                         "args" => [{ "fqn" => a,
-                                     "args" => args }] }.to_json)
+                                     "args" => args.collect(self.serialize) }] }.to_json)
      })
   end
 
