@@ -28,7 +28,7 @@ module Util
          @@closures[a['fqn']] :
          self.remoteCall(a['fqn']))):
        (a.is_a?(Proc) ?
-        (((@@closures[a.to_s] = a) && true) ||
+        (((@@closures[a.to_s] = a) && false) ||
          {"fqn" => a.to_s}) :
         a))
     }
