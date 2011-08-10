@@ -1,4 +1,4 @@
-require '~/workspace/ruby-now/lib/ruby-now.rb'
+require "ruby-now"
 
 EventMachine::run {
   EventMachine::start_server "127.0.0.1", 8081, RubyNow

@@ -2,7 +2,7 @@
 
 require 'eventmachine'
 require 'json'
-require '~/workspace/ruby-now/lib/util.rb'
+require 'util'
 require 'namedblock'
 
 module RubyNow
